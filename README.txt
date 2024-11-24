@@ -24,7 +24,7 @@ hundreds of inputs, and produces expected results every single time.
 In summary, this program is one of the only and best dedicated recursive
 function executors for any calculator out there. It is a stair step towards
 putting your TI-89 Titanium right up there with Mathematica and MATLAB. As
-always, It's up to you to harness its full potential.
+always, it's up to you to harness its full potential.
 
   - created and refined with passion.
 
