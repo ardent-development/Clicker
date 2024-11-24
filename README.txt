@@ -188,7 +188,7 @@ VI. CHANGELOG (LATEST-FIRST)
 
  * Clicker 3.0: Guarantees ability to work with lists and matrices; Takes
                 advantage of the status line; Adds input validation; Many
-                documentation improvements
+                documentation improvements; Change license to GPLv3
     - CODE: Add descriptive error dialogs to indicate invalid input.
     - CODE: More intuitive handling of error dialog input
     - CODE: Leverage the status bar to display relevant information (requiring
@@ -198,6 +198,7 @@ VI. CHANGELOG (LATEST-FIRST)
          implemented in the data-recording mode, as that is already slow to
          begin with.
     - CODE/DOC: Guarantee support for calculation involving lists and matrices
+    - LEGAL: Change license to GPLv3
     - DOC: Add more information about handling of `op` and `x`
     - DOC: Improve formatting, break up text walls into digestible paragraphs
        ~ Not perfect, but I tried :/
