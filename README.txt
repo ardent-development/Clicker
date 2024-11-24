@@ -203,7 +203,7 @@ VI. CHANGELOG (LATEST-FIRST)
        ~ Not perfect, but I tried :/
     - DOC: Add a "QUICK START" section for newbies
     - DOC: Add more examples involving lists and matrices
-    - DOC: Number the examples
+    - DOC: Number the examples, add screen recordings
 
  * Clicker 2.0: Adds ability to save calculation history to a list
     - CODE: Add functionality to keep track of clicking history in a list
