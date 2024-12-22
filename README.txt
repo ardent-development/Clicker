@@ -1,6 +1,6 @@
-/*** Clicker 3.0 **************************************************************\
+/*** Clicker 3.1 **************************************************************\
  * Author:       twisted_nematic57                                            *
- * Date:         11/23/2024 [MM-DD-YYYY]                                      *
+ * Date:         12/21/2024 [MM-DD-YYYY]                                      *
  * License:      GNU GPLv3 (or later) - see LICENSE                           *
  * Product Type: BASIC program                                                *
  * Platform:     TI-89 Titanium - can be ported to other Motorola 68000-based *
@@ -18,8 +18,9 @@ on a user-defined starting value. Then, the output of the operation is used as
 input for the next iteration.
 
 The program works flawlessly on negative and complex numbers. It can operate on
-entire lists or matrices on a per-iteration basis. It has been tested on many
-hundreds of inputs, and produces expected results every single time.
+entire lists or matrices. It can also be automated, running many iterations
+internally, and returning the last value. It has been tested on many hundreds of
+inputs, and produces expected results every single time.
 
 In summary, this program is one of the only and best dedicated recursive
 function executors for any calculator out there. It is a stair step towards
@@ -36,13 +37,14 @@ I. QUICK START
     - Archive them for safety (optional but recommended).
 2. Run:
     - On the Home Screen, type:
-        `clicker(start_val, "operation", "listname")`
-      Example: `clicker(0, "x+1", "")`
+        `clicker(start_val,"operation","listname",auto_execute)`
+      Example: `clicker(0,"x+1","",0)`
     - Press [ENTER] to iterate (count up from 0 in steps of 1), and [CLEAR] to
       quit the program.
 3. Results:
-    - The last iteration's result is saved to the `lastclic` variable. A list of
-      all iteration results is not created.
+    - The last iteration's result is returned on the Home Screen when the
+      program is terminated. A list of all iteration results is not created. No
+      iterations are automatically computed.
     - For troubleshooting, ensure all inputs are properly formatted and make
       mathematical sense.
 
@@ -68,9 +70,8 @@ Send `flib.89z` to your calculator.
 
 III. DETAILS
 
- * Clicker does not use many graphical effects. It is quite lightweight on its
-   own.
- * It works by executing an operation using a starting value as initial input.
+ * Clicker works by executing an operation using a starting value as initial
+   input. Each time you "click" the [ENTER] key it performs a step.
     - Think of the operation as a function of `x`. `op(x)` = {your operation}
     - When you press [ENTER], your starting value is plugged into `op(x)`. The
       result is then stored to `x`, and displayed on the screen.
@@ -83,13 +84,15 @@ III. DETAILS
    variables of your choice, if you tell it to do so.
     - Iteration numbers are 1-indexed, both when saving to a list and to a
       series of variables.
+    - Even if no data is to be saved to a list or sequence of variables, the
+      last iteration's result is always stored to a variable `lastclic` for
+      your convenience.
  * If any issues happen during execution of the program, it will catch most of
    those errors and let you know what's wrong. In fact they are not called
    "errors"; instead they are called "oopsies" since that's more friendly and
    less robotic than the word "error".
     - If there is an error during calculation, then it is highly likely that the
-      issue lies in your `x` or `op`. For example, trying to do things with
-      non-square matrices can often upset the calculator.
+      issue lies in your input.
 
 
 IV. USAGE
@@ -99,10 +102,14 @@ IV. USAGE
            any kind of number (positive, negative, complex, etc.), or a
            matrix/list.
     - `op`: A string containing any function of `x`.
-             ~ Other variables may be included in the function, as long as they
-               are defined beforehand (in most cases).
-             ~ Unfortunately it is not possible to chain commands using the `:`
-               character.
+             ~ Other variables may be included in the function. If they are not
+               defined beforehand, they will be treated as algebraic expressions
+               just as they would on the Home Screen.
+             ~ You can chain commands using the `:` character! You can issue
+               almost any sequence of regular BASIC commands before including
+               your equation. The only requirements are that the last command in
+               the string must be the recursive function, and it must not end
+               with a store (->) operation.
     - `calclist`: A string containing the name of the list that the calculation
                   history should be stored to upon exit.
                    ~ If set to 0 or an empty string (`""`), only the last result
@@ -128,24 +135,34 @@ IV. USAGE
                      matching the first 4 characters of the `calclist` string
                      followed by a fixed-length, 4-digit, base-10 integer
                      denoting the iteration number.
-                      ~ For example, assuming `x` and `op` contain lists within
+                      ~ For example, assuming `x` or `op` contain lists within
                         themselves, and `calclist` is set to "history", then the
                         result of the first iteration will be stored to
                         `clkrvars\hist0001`, the second to `clkrvars\hist0002`,
-                        etc.
+                        etc. Each of these variables are of the list data type.
                       ~ If the calculator runs out of RAM while doing
-                        iterations when saving to individual variables, then the
+                        iterations when saving to individual variables, the
                         program will not catch this error and you will need to
                         exit it by pressing the [ON] key. However, if you
                         archive the old iterations, set your `x` to the result
                         of the last iteration, and change some part of
                         `calclist`, you could essentially continue from where
                         you left when RAM ran out.
+    - `autoexec`: An integer >= 0 that denotes how many iterations the program
+                  should do immediately after starting. If this is > 0, then
+                  there will be no opportunity to interact with the program
+                  during execution, and it will exit as soon as all iterations
+                  have been computed.
+                   ~ It is still possible to force quit by pressing [ON].
+                   ~ If the program is supposed to save intermediate results to
+                     a list, it will respect that and act accordingly. If not,
+                     then only the last result will be saved to `lastclic`, as
+                     usual.
  * The calc will switch to the PrgmIO screen and display "Ready." Now, whenever
    you press [ENTER], the current value of `x` will be plugged into the
    operation you specified, and its result stored to `x`.
- * Upon pressing [CLEAR], the program will return to the Home Screen, save the
-   calculation history to a list if specified, and terminate.
+ * Upon pressing [CLEAR], the program will return to the Home Screen, manage the
+   storage of computed data if requested, and terminate.
 
 DISCLAIMER: Treating the program in ways that deviate from the specification
 above may cause unexpected and erratic behavior. No damage should ever occur to
@@ -156,35 +173,50 @@ distribution, storage, compression, or execution of this program.
 
 V. EXAMPLES
 
- 1. `clicker(0,"x+1",0)`: The first press of [ENTER] will display a 1. Pressing
-                          it repeatedly will count upwards. The calculation
-                          history will be discarded upon program termination.
+1. clicker(0,"x+1",0,0)
+The first press of [ENTER] will display a 1. Pressing it repeatedly will count
+upwards. The calculation history will be discarded upon program termination.
 
- 2. `clicker(2,"x^2","pow2")`: The first press of [ENTER] will display a 4.
-                               Pressing it repeatedly will display successively
-                               larger powers of 2. The calculation history will
-                               be stored to a list named `pow2`.
+2. clicker(2,"x^2","pow2",0)
+The first press of [ENTER] will display a 4. Pressing it repeatedly will display
+successively larger powers of 2. The calculation history will be stored to a
+list named `pow2`.
 
- 3. `clicker(0,"x^2+c","mandel")`: Repeatedly pressing [ENTER] will quickly
-                                   reveal if the complex number in `c` is part
-                                   of the Mandelbrot Set. Calculation history
-                                   will be stored to a list named `mandel`.
- 4. `clicker({2/3,3,5,7},"root(x,3)","cbrts")`: Gets the cube roots of 2/3, 3,
-                                                5, and 7; stores the results of
-                                                each iteration to a series of
-                                                variables in the folder
-                                                "clkrvars"
- 5. `clicker([[5,3][8,2]],"x^4","mat")`: Gets the 4th power of the matrix, and
-                                         stores the results of each iteration to
-                                         a series of variables in the folder
-                                         "clkrvars"
+3. clicker(0,"x^2+c","mandel",0)
+Repeatedly pressing [ENTER] will quickly reveal if the complex number in `c` is
+part of the Mandelbrot Set. Calculation history will be stored to a list named
+`mandel`.
 
-Screen recordings showing the above examples are in the "demos" directory.
-Please keep in mind that the calculator shown in the videos is emulated and is
-a bit less responsive to rapid input than the physical TI-89 Titanium.
+4. clicker({2/3,3,5,7},"root(x,3)","cbrts",0)
+Gets the cube roots of 2/3, 3, 5, and 7; stores the results of each iteration to
+a series of variables in the folder "clkrvars"
+
+5. clicker([[5,3][8,2]],"x^4","mat",0)
+Gets the 4th power of the matrix, and stores the results of each iteration to a
+series of variables in the folder "clkrvars"
+
+6. clicker(0,"x^2+c","mandel2",50)
+An automated version of Example 3. Instead of you having to manually keep
+stimulating progress in finding out if `c` is part of the Mandelbrot Set or not,
+this version will automatically do 50 iterations and store the calculation
+results to `mandel2`. If the last number is gigantic, infinity, or undefined,
+then `c` is not part of the set.
 
 
 VI. CHANGELOG (LATEST-FIRST)
+
+ * Clicker 3.1: Adds ability to automatically compute a set number of
+                iterations; Enables chaining of commands with BASIC syntax;
+                Improves built-in documentation accessible via F1 in the Catalog
+    - CODE: rename altloop to seqloop for clarity
+    - CODE: change expression execution code to support chaining of commands
+    - CODE: add ability to execute iterations automatically
+    - CODE: change a cryptic variable name to something more understandable
+    - CODE: change contents of the first comment to make the F1 help dialog more
+            useful
+    - DOC: reflect changes in code above
+    - DOC: remove screen recording examples
+    - DOC: enhance formatting of Examples section
 
  * Clicker 3.0: Guarantees ability to work with lists and matrices; Takes
                 advantage of the status line; Adds input validation; Many
