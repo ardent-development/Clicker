@@ -1,6 +1,6 @@
-/*** Clicker 3.1 **************************************************************\
+/*** Clicker 3.2 **************************************************************\
  * Author:       twisted_nematic57                                            *
- * Date:         12/21/2024 [MM-DD-YYYY]                                      *
+ * Date:         12/30/2024 [MM-DD-YYYY]                                      *
  * License:      GNU GPLv3 (or later) - see LICENSE                           *
  * Product Type: BASIC program                                                *
  * Platform:     TI-89 Titanium - can be ported to other Motorola 68000-based *
@@ -19,13 +19,13 @@ input for the next iteration.
 
 The program works flawlessly on negative and complex numbers. It can operate on
 entire lists or matrices. It can also be automated, running many iterations
-internally, and returning the last value. It has been tested on many hundreds of
-inputs, and produces expected results every single time.
+internally. It has been tested on many hundreds of inputs, and produces expected
+results every single time.
 
 In summary, this program is one of the only and best dedicated recursive
-function executors for any calculator out there. It is a stair step towards
-putting your TI-89 Titanium right up there with Mathematica and MATLAB. As
-always, it's up to you to harness its full potential.
+function executors for the TI-89 Titanium. It is a stair step towards putting
+your TI-89 Titanium right up there with Mathematica and MATLAB. As always, it's
+up to you to harness its full potential.
 
   - created and refined with passion.
 
@@ -39,8 +39,8 @@ I. QUICK START
     - On the Home Screen, type:
         `clicker(start_val,"operation","listname",auto_execute)`
       Example: `clicker(0,"x+1","",0)`
-    - Press [ENTER] to iterate (count up from 0 in steps of 1), and [CLEAR] to
-      quit the program.
+    - Press [ENTER] to iterate (count up from 0 in steps of 1), and [CLEAR] or
+      [HOME] to quit the program.
 3. Results:
     - The last iteration's result is returned on the Home Screen when the
       program is terminated. A list of all iteration results is not created. No
@@ -57,13 +57,12 @@ II. INSTALLATION
 Send `clicker.89p` to your calculator.
  It will be in its own folder "AAA" for quick access, but you can put it
    anywhere you like. It is folder-agnostic and can be called from anywhere.
- I recommend keeping it archived.
+ Keep it archived, there's no reason not to.
  It is GPLv3-or-later licensed, so if you wish to take advantage of the rights
    that implies then feel free to unarchive the variable and do whatever.
 
 Send `flib.89z` to your calculator.
- It *MUST* be stored in the "main" folder.
- I recommend keeping it archived.
+ It *MUST* be stored in the "main" folder. Keep it archived.
  It is GPLv2-or-later licensed, so if you wish to view its source code you can
    unzip "flibsrc.zip" and have at it.
 
@@ -78,8 +77,8 @@ III. DETAILS
     - As you keep pressing [ENTER], `op(x)` will be executed and its result
       stored to `x`, over and over again. It's essentially recursively executing
       the operation with its own previous output every time you press [ENTER].
- * You may press [CLEAR] to exit the program and go back to the Home Screen at
-   any time.
+ * You may press [CLEAR] or [HOME] to exit the program and go back to the Home
+   Screen at any time.
  * Clicker will store your calculation history to a list or sequence of
    variables of your choice, if you tell it to do so.
     - Iteration numbers are 1-indexed, both when saving to a list and to a
@@ -87,10 +86,8 @@ III. DETAILS
     - Even if no data is to be saved to a list or sequence of variables, the
       last iteration's result is always stored to a variable `lastclic` for
       your convenience.
- * If any issues happen during execution of the program, it will catch most of
-   those errors and let you know what's wrong. In fact they are not called
-   "errors"; instead they are called "oopsies" since that's more friendly and
-   less robotic than the word "error".
+ * If any issues happen during execution of the program, the calculator's
+   operating system will catch them and the program will stop.
     - If there is an error during calculation, then it is highly likely that the
       issue lies in your input.
 
@@ -139,7 +136,9 @@ IV. USAGE
                         themselves, and `calclist` is set to "history", then the
                         result of the first iteration will be stored to
                         `clkrvars\hist0001`, the second to `clkrvars\hist0002`,
-                        etc. Each of these variables are of the list data type.
+                        etc. Each of these variables are of the list data type,
+                        since `x` or `op` cannot be represented with another
+                        type.
                       ~ If the calculator runs out of RAM while doing
                         iterations when saving to individual variables, the
                         program will not catch this error and you will need to
@@ -161,8 +160,8 @@ IV. USAGE
  * The calc will switch to the PrgmIO screen and display "Ready." Now, whenever
    you press [ENTER], the current value of `x` will be plugged into the
    operation you specified, and its result stored to `x`.
- * Upon pressing [CLEAR], the program will return to the Home Screen, manage the
-   storage of computed data if requested, and terminate.
+ * Upon pressing [CLEAR] or [HOME], the program will return to the Home Screen,
+   manage the storage of computed data if requested, and terminate.
 
 DISCLAIMER: Treating the program in ways that deviate from the specification
 above may cause unexpected and erratic behavior. No damage should ever occur to
@@ -204,6 +203,27 @@ then `c` is not part of the set.
 
 
 VI. CHANGELOG (LATEST-FIRST)
+
+ * Clicker 3.2: Removes input validation, removes false showings of the "PAUSE"
+                indicator in the status bar, clarify which mode the program is
+                in at launch, replace separate triple dots with one logical
+                triple-dot character, increase performance, decrease memory
+                consumption, map [HOME] to [CLEAR], fix list-compatibility
+                checking bug.
+    - CODE: revise main while loop, change from while active=1 to while true:
+            considerably increases performance?
+       ~ also no need to store active variable, possible memory optimization?
+    - CODE: remove unnecessary recursive variable resetting lines
+    - CODE: fix list-compatibility checking bug
+       ~ When commands are chained, the old method would assume the results
+         wouldn't stay in a list even though they actually could. Changed method
+         to work around this issue: k serves as a temporary storage for x's
+         initial value, then the op is evaluated as-is and x itself is checked
+         for list compatibility.
+    - CODE: (aesthetic) change distinct triple dots into a single logical
+            triple-dot character (chars menu -> 3 -> E instead of just "...")
+    - DOC: clarify some operational details (relating to error handling)
+    - MISC: add plaintext source for curious people without access to AMS
 
  * Clicker 3.1: Adds ability to automatically compute a set number of
                 iterations; Enables chaining of commands with BASIC syntax;

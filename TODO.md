@@ -13,3 +13,11 @@
 - [X] Add ability to automatically do a number of iterations
 - [X] Improve built-in documentation (via F1 on user-defined programs menu in Catalog)
 - [X] Release 3.1
+- [X] Remove input validation
+- [X] Fix the false "PAUSE" indicator bug
+- [X] Fix a bug in the routine that checks if iteration results can be stored in lists
+- [X] Clarify which mode the program is in at launch (append to "Ready." message)
+- [X] Change the separate triple dots to the single logical dedicated triple-dot character
+- [X] Change while loop structure, increase performance
+- [X] Make [HOME] do the same thing as [CLEAR]
+- [X] Release 3.2
