@@ -1,6 +1,6 @@
-/*** Clicker 3.2 **************************************************************\
+/*** Clicker 3.3 **************************************************************\
  * Author:       twisted_nematic57                                            *
- * Date:         12/30/2024 [MM-DD-YYYY]                                      *
+ * Date:         02/18/2025 [MM-DD-YYYY]                                      *
  * License:      GNU GPLv3 (or later) - see LICENSE                           *
  * Product Type: BASIC program                                                *
  * Platform:     TI-89 Titanium - can be ported to other Motorola 68000-based *
@@ -10,8 +10,7 @@
 Clicker is a BASIC program that enables you to perform repetitive calculations
 on your TI-89 Titanium much quicker than you can on the Home Screen. You can
 even store and later access intermediate calculation results just as you'd be
-able to do on the real Home Screen. It only has one assembly subprogram
-dependency.
+able to do on the real Home Screen. It only has one C subprogram dependency.
 
 It works on the basis of performing _iterations_: a user-defined operation works
 on a user-defined starting value. Then, the output of the operation is used as
@@ -33,12 +32,13 @@ up to you to harness its full potential.
 I. QUICK START
 
 1. Install:
-    - Transfer `clicker.89p` and `flib.89z` to your calculator.
+    - Transfer `clicker.89p` and `flib.89z` to your calculator. Move flib to the
+      `misc` folder, but you can put `clicker` wherever you want.
     - Archive them for safety (optional but recommended).
 2. Run:
     - On the Home Screen, type:
         `clicker(start_val,"operation","listname",auto_execute)`
-      Example: `clicker(0,"x+1","",0)`
+      Example: `clicker(0,"x+1",0,0)`
     - Press [ENTER] to iterate (count up from 0 in steps of 1), and [CLEAR] or
       [HOME] to quit the program.
 3. Results:
@@ -62,7 +62,7 @@ Send `clicker.89p` to your calculator.
    that implies then feel free to unarchive the variable and do whatever.
 
 Send `flib.89z` to your calculator.
- It *MUST* be stored in the "main" folder. Keep it archived.
+ It *MUST* be stored in the `misc` folder. Keep it archived.
  It is GPLv2-or-later licensed, so if you wish to view its source code you can
    unzip "flibsrc.zip" and have at it.
 
@@ -89,7 +89,8 @@ III. DETAILS
  * If any issues happen during execution of the program, the calculator's
    operating system will catch them and the program will stop.
     - If there is an error during calculation, then it is highly likely that the
-      issue lies in your input.
+      issue lies in your input. If you are positive that it's an issue in the
+      program, feel free to reach out to the author.
 
 
 IV. USAGE
@@ -112,20 +113,20 @@ IV. USAGE
                    ~ If set to 0 or an empty string (`""`), only the last result
                      of the final iteration is stored to a variable named
                      `lastclic` in the current folder. Every iteration result
-                     that came before it is discarded.
-                   ~ The list name must not start with a number, it must not
+                     that is computed before will be discarded.
+                   ~ The list's name must not start with a number, it must not
                      contain a space character, and its length must be between 1
                      and 8.
                    ~ Recording data to a list can be especially slow after
                      a couple dozen iterations. Do not use this feature in
                      performance-critical scenarios.
                       ~ Due to the inherent loss of performance caused by the
-                        data recording routines, there is a QoL feature only
-                        active in iteration-recording mode that displays the
-                        current iteration number in the status line. This
-                        feature was technically too slow to implement in
-                        non-recording mode, but it really didn't hurt this one
-                        where operations are already slower than instantaneous.
+                        list-building routines, there is a QoL feature only
+                        active in list-saving mode that displays the current
+                        iteration number in the status line. This feature was
+                        technically too slow to implement in non-list-saving
+                        mode, but it really didn't hurt this one where
+                        operations are already slower than instantaneous.
                    ~ If `x` or `op` contains a list or matrix in itself, the
                      calculation history cannot be stored to a list. Instead, it
                      will be stored to a series of variables with a prefix
@@ -142,17 +143,17 @@ IV. USAGE
                       ~ If the calculator runs out of RAM while doing
                         iterations when saving to individual variables, the
                         program will not catch this error and you will need to
-                        exit it by pressing the [ON] key. However, if you
+                        terminate it by pressing the [ON] key. However, if you
                         archive the old iterations, set your `x` to the result
                         of the last iteration, and change some part of
                         `calclist`, you could essentially continue from where
                         you left when RAM ran out.
-    - `autoexec`: An integer >= 0 that denotes how many iterations the program
-                  should do immediately after starting. If this is > 0, then
-                  there will be no opportunity to interact with the program
+    - `autoexec`: A real integer >= 0 that denotes how many iterations the
+                  program should do immediately after starting. If this is > 0,
+                  then there will be no opportunity to interact with the program
                   during execution, and it will exit as soon as all iterations
                   have been computed.
-                   ~ It is still possible to force quit by pressing [ON].
+                   ~ It is still possible to exit by pressing [ON].
                    ~ If the program is supposed to save intermediate results to
                      a list, it will respect that and act accordingly. If not,
                      then only the last result will be saved to `lastclic`, as
@@ -187,8 +188,8 @@ part of the Mandelbrot Set. Calculation history will be stored to a list named
 `mandel`.
 
 4. clicker({2/3,3,5,7},"root(x,3)","cbrts",0)
-Gets the cube roots of 2/3, 3, 5, and 7; stores the results of each iteration to
-a series of variables in the folder "clkrvars"
+Recursively gets the cube roots of 2/3, 3, 5, and 7; stores the results of each
+iteration to a series of variables in the folder "clkrvars"
 
 5. clicker([[5,3][8,2]],"x^4","mat",0)
 Gets the 4th power of the matrix, and stores the results of each iteration to a
@@ -204,6 +205,16 @@ then `c` is not part of the set.
 
 VI. CHANGELOG (LATEST-FIRST)
 
+ * Clicker 3.3: Removes unnecessary flib calls, optimizes list saving routine
+    - CODE: remove stray flib calls that have no noticeable effect
+    - CODE: stop using `augment(` for list appending - it's slow because it
+            returns an entire list, whereas just storing the next element in the
+            next slot is much faster and modifies the original list directly
+    - CODE: change keycode hint formatting in comments
+    - DOC: change wording in §IV. USAGE.
+    - MISC: stop providing plaintext source, instead provide a PDF because it
+            has syntax highlighting
+
  * Clicker 3.2: Removes input validation, removes false showings of the "PAUSE"
                 indicator in the status bar, clarify which mode the program is
                 in at launch, replace separate triple dots with one logical
@@ -212,7 +223,7 @@ VI. CHANGELOG (LATEST-FIRST)
                 checking bug.
     - CODE: revise main while loop, change from while active=1 to while true:
             considerably increases performance?
-       ~ also no need to store active variable, possible memory optimization?
+       ~ also no need to store active variable, possible memory optimization
     - CODE: remove unnecessary recursive variable resetting lines
     - CODE: fix list-compatibility checking bug
        ~ When commands are chained, the old method would assume the results

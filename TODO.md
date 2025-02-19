@@ -21,3 +21,5 @@
 - [X] Change while loop structure, increase performance
 - [X] Make [HOME] do the same thing as [CLEAR]
 - [X] Release 3.2
+- [X] {See README.txt, release 3.3}
+- [X] Release 3.3
